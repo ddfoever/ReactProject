@@ -1,5 +1,6 @@
 import React,{Component} from 'react';
 import ImageDatasArr from '../data/imageInfos';
+import ImageFigure from './imgFigure'
 export default class GallaryReactByApp extends Component{
 
     constructor(props){
@@ -20,13 +21,25 @@ export default class GallaryReactByApp extends Component{
         this.getImageURL();
     }
     render(){
+        let controllerUnits =[];
+        let imgFigures = [];
+        ImageDatasArr.map((value,index)=>{
+            imgFigures.push(<ImageFigure key={index} imageInfo={value}/>)
+        })
+        
         // const imageData ;
-        console.log("ImageDatasArr",ImageDatasArr);
+        console.log("ImageDatasArr",imgFigures);
         // console.log("url",require('../images/1.jpg'));
         return(
            <section className="stage"> 
-             <section className="img-sec"></section>
-             <nav className="controller-nav"></nav>
+             <section className="img-sec">
+                 {imgFigures}
+                 {/* <img src={require("../images/0.jpg")}/> */}
+             </section>
+             <nav className="controller-nav">
+                 {controllerUnits}
+             </nav>
+            
             </section>
 
         )
