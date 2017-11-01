@@ -7,16 +7,21 @@ export default class ImageFigure extends Component{
     }
 
     render(){
-        const {imageInfo} = this.props;
-        console.log("imageInfo",imageInfo);
+        const {imageInfo,arrange} = this.props;
+        console.log("imageInfo",imageInfo,arrange);
         // let url =this.props.imageInfo.imageURL;
         // url = "../images/1";
         // console.log("url",url);
+        let styleObj = {};
+        if(arrange.pos){
+            styleObj = arrange.pos;
+        }
+        let url = require("../images/"+imageInfo.fileName);
         return(
-            <figure>
-                <img src={require(imageInfo.imageURL)} />
-                <figcaption>
-                    <h2>{imageInfo.title}</h2>
+            <figure className="figure-img" style={styleObj}>
+                <img src={url} alt={imageInfo.title} />
+                <figcaption >
+                    <h2 className="img-title">{imageInfo.title}</h2>
                 </figcaption>
             </figure>
         );
