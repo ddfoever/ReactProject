@@ -3,4 +3,6 @@
 
 使用node.js启动项目 使用create-react-app  React默认框架搭建
 
-命令：npm start
+命令：
+npm i -g create-react-app
+npm start
