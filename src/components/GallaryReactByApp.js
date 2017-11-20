@@ -27,7 +27,9 @@ export default class GallaryReactByApp extends Component{
                 // {
                 //     top:'0',
                 //     left:'0'
-                // }
+                // },
+                //rotate:0
+                //isInverse:false 表示图片的正反面
             ]
         }
     }
@@ -68,9 +70,25 @@ export default class GallaryReactByApp extends Component{
 
         this.reArrange(8);
     }
+    //获取0-30°之间的任意正负值
+    get30DegRandom(){
+        return ((Math.random()>0.5?"+":"-")+Math.ceil(Math.random()*30));
+    }
     //获取区间内的随机值
     getRangeRandom(rangeMin,rangeMax){
         return Math.ceil(Math.random()*(rangeMax - rangeMin) + rangeMin);
+    }
+    //翻转图片闭包函数
+    //图片index索引
+    //@return 一个闭包函数，其内returnn一个真正待执行的函数
+    inverse(index){
+        return function(){
+            let imgsArrangeArr = this.state.imgsArrangeArr;
+            imgsArrangeArr[index].isInverse  = !imgsArrangeArr[index].isInverse;
+            this.setState({
+                imgsArrangeArr:imgsArrangeArr
+            })
+        }.bind(this);
     }
     //重新布局所有图片，指定布局中心图片
     reArrange(centerIndex){
@@ -88,15 +106,20 @@ export default class GallaryReactByApp extends Component{
         topImgSpliceIndex = 0,
         imgsArrangeCenterArr = imgsArrangeArr.splice(centerIndex,1);
         imgsArrangeCenterArr[0].pos = centerPos;
+        imgsArrangeCenterArr[0].rotate = 0;///布局中间图片不需要旋转
         ///取出上侧要布局的图片
         topImgSpliceIndex =  Math.ceil( Math.random() * (imgsArrangeArr.length - topImgNum ));
         imgsArrangeTopArr = imgsArrangeArr.splice(topImgSpliceIndex,topImgNum);
         //布局上侧图片
         imgsArrangeTopArr.map((value,index)=>{
-            imgsArrangeTopArr[index].pos = {
-                top:this.getRangeRandom(vPosRangeTopY[0],vPosRangeTopY[1]),
-                left:this.getRangeRandom(vPosRangeX[0],vPosRangeX[1])
+            imgsArrangeTopArr[index]= {
+                pos :{
+                    top:this.getRangeRandom(vPosRangeTopY[0],vPosRangeTopY[1]),
+                    left:this.getRangeRandom(vPosRangeX[0],vPosRangeX[1])
+                },
+                rotate:this.get30DegRandom()
             }
+            
         });
         //布局左右两侧的图片
         for(var i=0,j = imgsArrangeArr.length,k = j/2;i<j;i++){
@@ -107,9 +130,12 @@ export default class GallaryReactByApp extends Component{
             }else{
                 hPosRangeLORX = hPosRangeRightSecX;
             }
-            imgsArrangeArr[i].pos ={
-                top:this.getRangeRandom(hPosRangeY[0],hPosRangeY[1]),
-                left:this.getRangeRandom(hPosRangeLORX[0],hPosRangeLORX[1])
+            imgsArrangeArr[i] ={
+                pos:{
+                    top:this.getRangeRandom(hPosRangeY[0],hPosRangeY[1]),
+                    left:this.getRangeRandom(hPosRangeLORX[0],hPosRangeLORX[1])
+                },
+                rotate:this.get30DegRandom()
             }
         }
 
@@ -143,10 +169,12 @@ export default class GallaryReactByApp extends Component{
                     pos:{
                         left:0,
                         top:0
-                    }
+                    },
+                    rotate:0,
+                    isInverse:false
                 }
             }
-            imgFigures.push(<ImageFigure key={index} imageInfo={value} ref={"imgFigure"+index} arrange = {this.state.imgsArrangeArr[index]}/>)
+            imgFigures.push(<ImageFigure key={index} imageInfo={value} ref={"imgFigure"+index} inverse={this.inverse(index)} arrange = {this.state.imgsArrangeArr[index]}/>)
         })  
         
         // const imageData ;
